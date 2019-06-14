@@ -95,8 +95,8 @@ def generate_ducks():
 
     #delete ducks folder :(
     shutil.rmtree(
-        DUCKS_URL, 
-        on_error=lambda f,p,e: print(f"duckparse: error deleting ducks: {e}")
+        DUCKS_URI, 
+        onerror=lambda f,p,e: print(f"duckparse: error deleting ducks: {e}")
     )
 
 if __name__ == "__main__":
