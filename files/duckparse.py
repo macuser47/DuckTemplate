@@ -8,6 +8,7 @@ import sys
 import re
 from collections import defaultdict, namedtuple
 import shutil
+import json
 
 
 DUCKS_URI = "./ducks" 
@@ -55,7 +56,7 @@ class DuckProcessor:
         #iterate over matches, query, and create new file
         newfile = ""
         prev_index = 0
-        id_cache = {} 
+        id_cache = {}
         for match in self.fsm.finditer(contents):
             duck_match = DuckField(*match.groups())
 
@@ -82,16 +83,19 @@ class DuckProcessor:
         with open(new_path, "w") as f:
             f.write(newfile)
 
+        return id_cache
+
 def generate_ducks():
     #grab and process all ducks
     dproc = DuckProcessor(DUCK_REGEX)
+    duck_dicts = {}
     for entry in os.scandir(DUCKS_URI):
         if entry.name in IGNORED_FILES:
             continue
 
         if entry.is_file():
             print("Duck query for {}".format(entry.name))
-            dproc.process_duck(entry.path, entry.name)
+            duck_dicts[entry.name] = dproc.process_duck(entry.path, entry.name)
 
     #delete ducks folder :(
     shutil.rmtree(
@@ -99,5 +103,10 @@ def generate_ducks():
         onerror=lambda f,p,e: print(f"duckparse: error deleting ducks: {e}")
     )
 
+    #return id, value pairs for every file
+    return duck_dicts 
+
 if __name__ == "__main__":
-    generate_ducks()
+    #query user to generate ducks, then write id, value pairs to stdout in json
+    pairs = generate_ducks()
+    print(json.dumps(pairs))
