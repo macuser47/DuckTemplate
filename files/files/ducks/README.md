@@ -56,5 +56,5 @@ chmod -R user:user {<target:>}
 ```
 
 Note that both id and query values are optional, but an annotation defining
-only an id will case an error if a query string was not previously
+only an id will cause an error if a query string was not previously
 defined for the id.
