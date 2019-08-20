@@ -9,6 +9,7 @@ import re
 from collections import defaultdict, namedtuple
 import shutil
 import json
+from contextlib import redirect_stdout
 
 
 DUCKS_URI = "./ducks" 
@@ -108,5 +109,6 @@ def generate_ducks():
 
 if __name__ == "__main__":
     #query user to generate ducks, then write id, value pairs to stdout in json
-    pairs = generate_ducks()
+    with redirect_stdout(sys.stderr): #ensure queries aren't dumped over pipe
+        pairs = generate_ducks()
     print(json.dumps(pairs))
